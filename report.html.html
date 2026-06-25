@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contractors Daily Report</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+body {
+    font-family: 'Segoe UI';
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.control {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.control input {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    width: 150px;
+}
+
+.control button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-update { background: #22c55e; color: white; }
+.btn-pdf { background: #ef4444; color: white; }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.date-box {
+    background: #334155;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.card i {
+    font-size: 25px;
+    color: #38bdf8;
+    margin-bottom: 10px;
+}
+
+.highlight {
+    background: #0369a1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="control">
+    <h3>Control Panel</h3>
+
+    <input type="number" id="inputTotal" placeholder="Total WO">
+    <input type="number" id="inputDone" placeholder="Completed">
+    <input type="number" id="inputCancel" placeholder="Cancelled">
+    <input type="number" id="inputContractors" placeholder="Contractors">
+    <input type="text" id="inputReason" placeholder="Cancel Reason">
+
+    <br>
+
+    <button class="btn-update" onclick="updateReport()">Update</button>
+    <button class="btn-pdf" onclick="downloadPDF()">Download PDF</button>
+</div>
+
+<div id="report">
+
+<div class="header">
+    <div>
+        <h2>متابعة اعمال المقاولين اليومية</h2>
+        <p>(مكتب خريص - قسم الانشاءات)</p>
+        <small>شركة التصميم الفني للاستشارات الهندسية</small>
+    </div>
+    <div class="date-box" id="date"></div>
+</div>
+
+<div class="cards">
+
+    <div class="card">
+        <i class="fa-solid fa-list-check"></i>
+        <h3>Scheduled WO</h3>
+        <p id="total">0</p>
+    </div>
+
+    <div class="card">
+        <i class="fa-solid fa-check-circle"></i>
+        <h3>Completed</h3>
+        <p id="done">0</p>
+    </div>
+
+    <div class="card">
+        <i class="fa-solid fa-xmark-circle"></i>
+        <h3>Cancelled</h3>
+        <p id="cancel">0</p>
+    </div>
+
+    <div class="card">
+        <i class="fa-solid fa-user-xmark"></i>
+        <h3>Cancel Reason</h3>
+        <p id="reason">--</p>
+    </div>
+
+    <div class="card highlight">
+        <i class="fa-solid fa-chart-line"></i>
+        <h3>Completion %</h3>
+        <p id="percent">0%</p>
+    </div>
+
+    <div class="card highlight">
+        <i class="fa-solid fa-users"></i>
+        <h3>Contractors</h3>
+        <p id="contractors">0</p>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+// التاريخ تلقائي
+const today = new Date();
+document.getElementById("date").innerHTML =
+    today.toLocaleDateString('en-US', {
+        year:'numeric',
+        month:'long',
+        day:'numeric'
+    });
+
+// تحديث البيانات
+function updateReport() {
+
+    let total = +document.getElementById("inputTotal").value;
+    let done = +document.getElementById("inputDone").value;
+    let cancel = +document.getElementById("inputCancel").value;
+    let contractors = +document.getElementById("inputContractors").value;
+    let reason = document.getElementById("inputReason").value;
+
+    let percent = total > 0 ? ((done / total) * 100).toFixed(1) : 0;
+
+    document.getElementById("total").innerHTML = total;
+    document.getElementById("done").innerHTML = done;
+    document.getElementById("cancel").innerHTML = cancel;
+    document.getElementById("contractors").innerHTML = contractors;
+    document.getElementById("reason").innerHTML = reason;
+    document.getElementById("percent").innerHTML = percent + "%";
+}
+
+// تحميل PDF
+function downloadPDF() {
+    let element = document.getElementById("report");
+    html2pdf().from(element).save("Daily_Report.pdf");
+}
+
+</script>
+
+</body>
+</html>
